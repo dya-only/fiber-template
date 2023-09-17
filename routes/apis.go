@@ -16,4 +16,16 @@ func Users(app *fiber.App) {
 	api.Get("/user/:id", func(c *fiber.Ctx) error {
 		return GetUserById(c)
 	})
+
+	api.Patch("/user/avatar", func(c *fiber.Ctx) error {
+		return UpdateAvatar(c)
+	})
+}
+
+func Files(app *fiber.App) {
+	api := app.Group("/api")
+
+	api.Get("/uploads/avatar/:fileName", func(c *fiber.Ctx) error {
+		return GetAvatar(c)
+	})
 }

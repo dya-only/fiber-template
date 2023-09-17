@@ -94,3 +94,31 @@ func GetUserById(c *fiber.Ctx) error {
 		"body":    user,
 	})
 }
+
+func UpdateAvatar(c *fiber.Ctx) error {
+	file, _ := c.FormFile("avatar")
+	var body models.Update
+
+	if err := c.BodyParser(&body); err != nil {
+		return c.JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to parse body",
+		})
+	}
+
+	err := c.SaveFile(file, "public/uploads/avatars/"+file.Filename)
+
+	if err != nil || file == nil {
+		return c.JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to save file",
+		})
+	}
+
+	user, _ := utils.DbConn.User.UpdateOneID(int(body.Id)).SetAvatar(file.Filename).Save(ctx)
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"body":    user,
+	})
+}

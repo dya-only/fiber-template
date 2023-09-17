@@ -13,6 +13,7 @@ func main() {
 	app.Use(cors.New())
 
 	routes.Users(app)
+	routes.Files(app)
 
 	app.Get("/api", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
