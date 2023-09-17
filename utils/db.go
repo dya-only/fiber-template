@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	_ "github.com/go-sql-driver/mysql"
 	"go-template/ent"
 	"log"
@@ -20,4 +21,9 @@ func CreateDbConnection() {
 
 	log.Println("DB Connected.")
 	DbConn = client
+
+	ctx := context.Background()
+	if err := DbConn.Schema.Create(ctx); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
 }
