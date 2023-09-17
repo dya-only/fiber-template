@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go-template/models"
 	"go-template/utils"
-	"log"
 	"time"
 )
 
@@ -55,18 +54,17 @@ func GetAllUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.JSON(err)
 	}
-
-	log.Println(users)
 	return c.JSON(users)
 }
 
 func Users(app *fiber.App) {
-	app.Post("/api/user", func(c *fiber.Ctx) error {
+	api := app.Group("/api")
+
+	api.Post("/user", func(c *fiber.Ctx) error {
 		return CreateUser(c)
 	})
 
-	app.Get("/api/user", func(c *fiber.Ctx) error {
+	api.Get("/user", func(c *fiber.Ctx) error {
 		return GetAllUser(c)
 	})
-
 }

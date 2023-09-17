@@ -11,6 +11,7 @@ func main() {
 	utils.CreateDbConnection()
 	app := fiber.New()
 	app.Use(cors.New())
+
 	routes.Users(app)
 
 	app.Get("/api", func(c *fiber.Ctx) error {
