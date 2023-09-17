@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"github.com/gofiber/fiber/v2"
+	_user "go-template/ent/user"
 	"go-template/models"
 	"go-template/utils"
 	"time"
@@ -19,6 +20,14 @@ func CreateUser(c *fiber.Ctx) error {
 			"message": "Failed to parse body",
 		})
 	}
+	exists, _ := utils.DbConn.User.Query().Where(_user.NameEQ(body.Name)).Exist(ctx)
+
+	if exists {
+		return c.JSON(fiber.Map{
+			"success": false,
+			"message": "Name already exists",
+		})
+	}
 
 	user, err := utils.DbConn.User.
 		Create().
@@ -32,7 +41,6 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"success": false,
 			"message": "Failed to create user",
-			"error":   err,
 		})
 	}
 
@@ -52,19 +60,37 @@ func GetAllUser(c *fiber.Ctx) error {
 		})
 	}
 	if err != nil {
-		return c.JSON(err)
+		return c.JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to find users",
+		})
 	}
-	return c.JSON(users)
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"body":    users,
+	})
 }
 
-func Users(app *fiber.App) {
-	api := app.Group("/api")
+func GetUserById(c *fiber.Ctx) error {
+	id, _ := c.ParamsInt("id")
+	user, err := utils.DbConn.User.Get(ctx, id)
 
-	api.Post("/user", func(c *fiber.Ctx) error {
-		return CreateUser(c)
-	})
+	if user == nil {
+		return c.JSON(fiber.Map{
+			"success": false,
+			"message": "Not found user",
+		})
+	}
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to find user by id",
+		})
+	}
 
-	api.Get("/user", func(c *fiber.Ctx) error {
-		return GetAllUser(c)
+	return c.JSON(fiber.Map{
+		"success": true,
+		"body":    user,
 	})
 }
