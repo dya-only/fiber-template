@@ -22,6 +22,14 @@ func Users(app *fiber.App) {
 	})
 }
 
+func Auth(app *fiber.App) {
+	api := app.Group("/api")
+
+	api.Post("/auth/by-pass", func(c *fiber.Ctx) error {
+		return LoginByPassword(c)
+	})
+}
+
 func Files(app *fiber.App) {
 	api := app.Group("/api")
 
