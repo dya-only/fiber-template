@@ -1,4 +1,4 @@
-package routes
+package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -6,7 +6,7 @@ import (
 	_user "go-template/ent/user"
 	"go-template/models"
 	"go-template/utils"
-	//"os"
+	"os"
 	"time"
 )
 
@@ -45,9 +45,12 @@ func LoginByPassword(c *fiber.Ctx) error {
 
 	_token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	token, err := _token.SignedString([]byte("secret"))
+	token, err := _token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.JSON(fiber.Map{
+			"success": false,
+			"message": "Failed create token",
+		})
 	}
 
 	return c.JSON(fiber.Map{

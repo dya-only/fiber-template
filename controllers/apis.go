@@ -1,6 +1,9 @@
-package routes
+package controllers
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"go-template/middlewares"
+)
 
 func Users(app *fiber.App) {
 	api := app.Group("/api")
@@ -9,7 +12,7 @@ func Users(app *fiber.App) {
 		return CreateUser(c)
 	})
 
-	api.Get("/user", func(c *fiber.Ctx) error {
+	api.Get("/user", middlewares.JwtGuard, func(c *fiber.Ctx) error {
 		return GetAllUser(c)
 	})
 
