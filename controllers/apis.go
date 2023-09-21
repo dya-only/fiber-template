@@ -16,11 +16,11 @@ func Users(app *fiber.App) {
 		return GetAllUser(c)
 	})
 
-	api.Get("/user/:id", func(c *fiber.Ctx) error {
+	api.Get("/user/:id", middlewares.JwtGuard, func(c *fiber.Ctx) error {
 		return GetUserById(c)
 	})
 
-	api.Patch("/user/avatar", func(c *fiber.Ctx) error {
+	api.Patch("/user/avatar", middlewares.JwtGuard, func(c *fiber.Ctx) error {
 		return UpdateAvatar(c)
 	})
 }
@@ -36,7 +36,7 @@ func Auth(app *fiber.App) {
 func Files(app *fiber.App) {
 	api := app.Group("/api")
 
-	api.Get("/uploads/avatar/:fileName", func(c *fiber.Ctx) error {
+	api.Get("/uploads/avatar/:file", middlewares.JwtGuard, func(c *fiber.Ctx) error {
 		return GetAvatar(c)
 	})
 }
